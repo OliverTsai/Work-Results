@@ -1,0 +1,25 @@
+export const imagesData = {
+//   logo: new URL('./logo.png', import.meta.url).href,
+//   banner: new URL('./banner.jpg', import.meta.url).href,
+//   iconUser: new URL('./icons/user.png', import.meta.url).href,
+//   iconCart: new URL('./icons/cart.png', import.meta.url).href,
+
+  bgSelectImage: new URL('./bg_select.png', import.meta.url).href,
+  selectBgImage: new URL('./select-bg.png', import.meta.url).href,
+  jackpotBgImage: new URL('./jackpot-bg.png', import.meta.url).href,
+  btnBackImage: new URL('./btn-back.png', import.meta.url).href,
+  btnChatBg: new URL('./btn-chat-bg.png', import.meta.url).href,
+  btnEnterfastImage: new URL('./btn-enterfast.png', import.meta.url).href,
+  btnCreateRoomImage: new URL('./btn-create-room.png', import.meta.url).href,
+  frameRegularImage: new URL('./框-一般.png', import.meta.url).href,
+  frameTurboImage: new URL('./框-急速.png', import.meta.url).href,
+  frameShortDeckImage: new URL('./框-短牌.png', import.meta.url).href,
+  frameOmahaImage: new URL('./框-奧馬哈.png', import.meta.url).href,
+  frameTournamentImage: new URL('./框-積分賽.png', import.meta.url).href,
+  blindImage: new URL('./忙注.png', import.meta.url).href,
+  blindImage2: new URL('./room_F_s_2.png', import.meta.url).href,
+  playersImage: new URL('./人數.png', import.meta.url).href,
+  playersImage2: new URL('./room_F_s_2.png', import.meta.url).href,
+  CategorySelectImage: new URL('./Category_Select.png', import.meta.url).href,
+  CategoryNoSelectImage: new URL('./Category_NoSelect.png', import.meta.url).href
+}

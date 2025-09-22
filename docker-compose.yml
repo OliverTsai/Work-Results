@@ -1,0 +1,16 @@
+services:
+  frontend:
+    build:
+      context: .  # 使用當前目錄作為建置來源
+      dockerfile: Dockerfile  # 指定 Dockerfile
+    ports:
+      - "8082:80"  # Vue 網站透過 Nginx 運行在 8082
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+    restart: always  # 確保容器崩潰時能自動重啟
+
+networks:
+  app-network:
+    driver: bridge

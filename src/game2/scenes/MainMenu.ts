@@ -255,7 +255,7 @@ export class MainMenu extends Scene
         //添加開始遊戲按鈕
         this.startGameButton = this.add.rectangle(
             width / 2,
-            height - 50,
+            height / 2 + 100,
             200,
             60,
             0xFF5722,
@@ -264,7 +264,7 @@ export class MainMenu extends Scene
         
         this.startGameText = this.add.text(
             width / 2,
-            height - 50,
+            height / 2 + 100,
             '開始遊戲',
             { fontSize: '36px', color: '#ffffff', fontStyle: 'bold' }
         ).setOrigin(0.5);

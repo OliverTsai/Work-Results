@@ -151,22 +151,5 @@ const router = createRouter({
   routes,
 })
 
-// 全局路由守衛 - 檢查是否需要驗證
-router.beforeEach((to, from, next) => {
-  // 檢查目標路由是否需要驗證
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    // 檢查是否有 token
-    const token = localStorage.getItem('token');
-    if (!token) {
-      // 沒有 token，重定向到首頁
-      next({ name: 'home' });
-    } else {
-      // 有 token，允許訪問
-      next();
-    }
-  } else {
-    // 不需要驗證的路由，直接放行
-    next();
-  }
-})
+
 export default router;

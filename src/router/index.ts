@@ -6,6 +6,7 @@ import WebHome from '@/views/WebPortfolio.vue';
 import MobileHome from '@/views/MobilePortfolio.vue';
 
 import gameView from '@/views/gameView.vue';
+import game2View from '@/views/game2View.vue';
 import gameTurboView from '@/views/gameTurboView.vue';
 import LoginView from '@/views/LoginView.vue';
 import LoginLineView from '@/views/LoginLineView.vue';
@@ -132,6 +133,12 @@ const routes = [
     name: 'game',
     component: store.isMobile ? gameView : gameView,
     meta: { requiresAuth: true } // 標記此路由需要驗證
+  },
+  // 遊戲2頁面
+  {
+    path: '/game2',
+    name: 'game2',
+    component: store.isMobile ? game2View : game2View,
   },
   {
     path: '/gameTurbo',

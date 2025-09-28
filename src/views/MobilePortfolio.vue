@@ -11,7 +11,7 @@ const games = ref([
     title: '太空射擊',
     description: '經典太空射擊遊戲，擊敗敵人、收集道具',
     image: 'game1.jpg',
-    link: '/games/space-shooter'
+    link: 'game2'
   },
   {
     id: 2,

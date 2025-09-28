@@ -12,11 +12,11 @@ provide("messages", wsStore.messages);
 provide("isConnected", wsStore.isConnected);
 
 onMounted(() => {
-    wsStore.connect(); // 啟動 WebSocket 連線
+    // wsStore.connect(); // 啟動 WebSocket 連線
 });
 
 onUnmounted(() => {
-    wsStore.disconnect();
+    // wsStore.disconnect();
 });
 
 // The sprite can only be moved in the MainMenu Scene

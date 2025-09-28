@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import { Boot } from './scenes/Boot';
 import { Preloader } from './scenes/Preloader';
 import{ MainMenu } from './scenes/MainMenu';
+import{ GameStart } from './scenes/GameStart';
 
 import { AUTO, Game, Scale } from 'phaser';
 
@@ -88,6 +89,7 @@ const config = {
         Boot,
         Preloader,
         MainMenu,
+        GameStart,
     ],
     render: {
         antialias: true, // ✅ 關鍵：禁用抗鋸齒（會導致模糊）

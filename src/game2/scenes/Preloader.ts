@@ -56,13 +56,11 @@ export class Preloader extends Scene{
 
     preload ()
     {
-        this.load.setPath('/public/assets/picture');
-
-        this.load.image('刺客', '/user/assa_sat1-1.png');
-        this.load.image('魔法師', '/user/mage_sat1-1.png');
-        this.load.image('弓箭手', '/user/弓箭手1-1NEW sat.png');
-        this.load.image('祭司', '/user/祭司_sat1-1.png');
-        this.load.image('騎士', '/user/knight1_1_sat.png');
+        this.load.image('刺客', 'https://olivertsai.github.io/Work-Results/assets/picture/user/assa_sat1-1.png');
+        this.load.image('魔法師', 'https://olivertsai.github.io/Work-Results/assets/picture/user/mage_sat1-1.png');
+        this.load.image('弓箭手', 'https://olivertsai.github.io/Work-Results/assets/picture/user/弓箭手1-1NEW sat.png');
+        this.load.image('祭司', 'https://olivertsai.github.io/Work-Results/assets/picture/user/祭司_sat1-1.png');
+        this.load.image('騎士', 'https://olivertsai.github.io/Work-Results/assets/picture/user/knight1_1_sat.png');
 
     }
 

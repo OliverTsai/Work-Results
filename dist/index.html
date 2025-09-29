@@ -2,54 +2,10 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" type="image/png" href="/Work-Results/favicon.ico" />
+        <link rel="icon" type="image/png" href="./favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/Work-Results/style.css">
+        <link rel="stylesheet" href="./style.css">
         <title>v20250922-1</title>
-        <script>
-            // 處理 GitHub Pages 的 SPA 路由問題
-            (function() {
-                // 檢查是否從 404 頁面重定向過來
-                const redirectPath = sessionStorage.getItem('redirect_path');
-                if (redirectPath) {
-                    // 清除存儲的路徑
-                    sessionStorage.removeItem('redirect_path');
-                    
-                    // 使用 History API 更新 URL 而不刷新頁面
-                    history.replaceState(null, null, redirectPath);
-                }
-                
-                // 捕獲所有未處理的錯誤
-                window.addEventListener('error', function(event) {
-                    console.error('頁面發生錯誤:', event.error);
-                    
-                    // 如果是關鍵錯誤，可以重定向到首頁
-                    // 這裡可以根據具體錯誤類型進行過濾
-                    if (event.error && (
-                        event.error.message.includes('Failed to fetch') || 
-                        event.error.message.includes('NetworkError') ||
-                        event.error.message.includes('ChunkLoadError')
-                    )) {
-                        console.log('檢測到關鍵錯誤，重定向到首頁...');
-                        window.location.href = '/';
-                    }
-                });
-                
-                // 捕獲未處理的 Promise 錯誤
-                window.addEventListener('unhandledrejection', function(event) {
-                    console.error('未處理的 Promise 錯誤:', event.reason);
-                    
-                    // 同樣可以根據錯誤類型決定是否重定向
-                    if (event.reason && (
-                        (event.reason.message && event.reason.message.includes('Failed to fetch')) ||
-                        (event.reason.name && event.reason.name.includes('ChunkLoadError'))
-                    )) {
-                        console.log('檢測到關鍵 Promise 錯誤，重定向到首頁...');
-                        window.location.href = '/';
-                    }
-                });
-            })();
-        </script>
       <script type="module" crossorigin src="/Work-Results/assets/index-Bz47U5ZJ.js"></script>
       <link rel="modulepreload" crossorigin href="/Work-Results/assets/phaser-BvzNzgtf.js">
       <link rel="stylesheet" crossorigin href="/Work-Results/assets/index-B_riLKgX.css">

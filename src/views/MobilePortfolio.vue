@@ -8,8 +8,8 @@ const activeTab = ref('games');
 const games = ref([
   {
     id: 1,
-    title: '太空射擊',
-    description: '經典太空射擊遊戲，擊敗敵人、收集道具',
+    title: '英雄戰爭',
+    description: '經典RPG射擊遊戲，擊敗敵人、收集道具',
     image: 'game1.jpg',
     link: 'game2'
   },

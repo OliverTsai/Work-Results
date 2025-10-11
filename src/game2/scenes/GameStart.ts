@@ -1,4 +1,5 @@
 import { GameObjects, Scene, Input } from 'phaser';
+import { getAvailableSkills, upgradeSkill, applyAllSkills, Skill } from './utils/skill';
 
 export class GameStart extends Scene
 {
@@ -25,6 +26,10 @@ export class GameStart extends Scene
     monsters: GameObjects.Group;
     monsterSpawnTimer: Phaser.Time.TimerEvent;
     gameOver: boolean = false;
+    
+    // 技能選擇界面
+    skillSelectionUI: GameObjects.Container;
+    isSkillSelectionOpen: boolean = false;
 
     constructor ()
     {
@@ -35,27 +40,38 @@ export class GameStart extends Scene
     {
         // 重置遊戲狀態
         this.gameOver = false;
+        this.isSkillSelectionOpen = false;
         
         // 接收從MainMenu傳過來的角色資料
         if (data && data.character) {
             this.characterData = data.character;
-            console.log('接收到角色資料:', this.characterData);
+            
+            
+            // 初始化技能相關屬性
+            this.initCharacterSkills();
             
             // 根據角色速度調整射擊間隔
-            this.shootInterval = Math.max(50, 200 - (this.characterData.speed * 15));
+            this.updateShootInterval();
+
+            console.log('接收到角色資料:', this.characterData);
         } else {
             // 如果沒有傳入資料，嘗試從localStorage讀取最後選擇的角色
             try {
                 const lastIndex = localStorage.getItem('lastSelectedCharacterIndex');
                 const savedData = localStorage.getItem('characterData');
+
+                console.log('從localStorage讀取角色資料:', lastIndex, savedData);
                 
                 if (lastIndex && savedData) {
                     const allCharacters = JSON.parse(savedData);
                     this.characterData = allCharacters[parseInt(lastIndex)];
                     console.log('從localStorage讀取角色資料:', this.characterData);
                     
+                    // 初始化技能相關屬性
+                    this.initCharacterSkills();
+                    
                     // 根據角色速度調整射擊間隔
-                    this.shootInterval = Math.max(50, 200 - (this.characterData.speed * 15));
+                    this.updateShootInterval();
                 } else {
                     console.error('沒有角色資料可用');
                     // 使用默認值
@@ -65,7 +81,8 @@ export class GameStart extends Scene
                         speed: 1,
                         lv: 1,
                         exp: 0,
-                        maxExp: 10
+                        maxExp: 10,
+                        skillPoints: 0
                     };
                     this.shootInterval = 200;
                 }
@@ -78,7 +95,8 @@ export class GameStart extends Scene
                     speed: 1,
                     lv: 1,
                     exp: 0,
-                    maxExp: 10
+                    maxExp: 10,
+                    skillPoints: 0
                 };
                 this.shootInterval = 200;
             }
@@ -90,6 +108,44 @@ export class GameStart extends Scene
         // 添加背景圖片
         this.background = this.add.image(width / 2, height / 2, 'background')
             .setDisplaySize(width, height); 
+    }
+    
+    // 初始化角色技能相關屬性
+    initCharacterSkills() {
+        // 確保有技能點數屬性
+        if (this.characterData.skillPoints === undefined) {
+            this.characterData.skillPoints = 0;
+        }
+        
+        // 確保所有技能屬性都存在
+        const skillKeys = ['splitShot', 'piercingShot', 'explosion', 'harmBoost', 'speedBoost'];
+        skillKeys.forEach(skillKey => {
+            if (this.characterData[skillKey] === undefined) {
+                this.characterData[skillKey] = 0;
+            }
+        });
+        
+        // 應用所有已學習的技能效果
+        applyAllSkills(this.characterData);
+    }
+    
+    // 更新射擊間隔
+    updateShootInterval() {
+        // 基礎速度 + 速度強化技能加成
+        const speedBoost = this.characterData.speedBoost || 0;
+        const totalSpeed = this.characterData.speed + speedBoost;
+        this.shootInterval = Math.max(50, 200 - (totalSpeed * 15));
+        
+        // 如果正在射擊，更新射擊定時器
+        if (this.isShooting && this.shootTimer) {
+            this.shootTimer.remove();
+            this.shootTimer = this.time.addEvent({
+                delay: this.shootInterval,
+                callback: this.shootLightBall,
+                callbackScope: this,
+                loop: true
+            });
+        }
     }
 
     create ()
@@ -111,7 +167,7 @@ export class GameStart extends Scene
         
         // 設置觸控移動事件
         this.input.on('pointermove', (pointer: Input.Pointer) => {
-            if (pointer.isDown && !this.gameOver) {
+            if (pointer.isDown && !this.gameOver && !this.isSkillSelectionOpen) {
                 // 更新玩家的X座標為觸控點的X座標
                 this.player.x = pointer.x;
             }
@@ -119,7 +175,7 @@ export class GameStart extends Scene
         
         // 設置按下事件 - 開始射擊
         this.input.on('pointerdown', () => {
-            if (this.gameOver) return;
+            if (this.gameOver || this.isSkillSelectionOpen) return;
             
             this.isShooting = true;
             // 設置定時器，根據角色速度決定射擊間隔
@@ -160,6 +216,9 @@ export class GameStart extends Scene
             this.scene.start('MainMenu');
         });
         
+        // 添加技能按鈕
+        this.createSkillButton();
+        
         // 設置怪物生成定時器 (每5秒生成一個怪物)
         this.monsterSpawnTimer = this.time.addEvent({
             delay: 5000,
@@ -170,6 +229,250 @@ export class GameStart extends Scene
         
         // 先生成一個怪物，不用等待
         this.spawnMonster();
+        
+        // 創建技能選擇界面 (初始隱藏)
+        this.createSkillSelectionUI();
+    }
+    
+    // 創建技能按鈕
+    createSkillButton() {
+        const { width } = this.scale;
+        
+        const skillButton = this.add.rectangle(
+            width - 80, 
+            40, 
+            120, 
+            50, 
+            0x000000, 
+            0.7
+        ).setOrigin(0.5).setInteractive();
+        
+        const skillText = this.add.text(
+            width - 80, 
+            40, 
+            '技能', 
+            { fontSize: '24px', color: '#ffffff' }
+        ).setOrigin(0.5);
+        
+        // 技能點數顯示
+        const skillPointsText = this.add.text(
+            width - 80, 
+            65, 
+            `點數: ${this.characterData.skillPoints || 0}`, 
+            { fontSize: '16px', color: '#ffff00' }
+        ).setOrigin(0.5);
+        
+        // 保存引用以便更新
+        this.characterData.skillPointsText = skillPointsText;
+        
+        skillButton.on('pointerdown', () => {
+            this.toggleSkillSelectionUI();
+        });
+    }
+    
+    // 創建技能選擇界面
+    createSkillSelectionUI() {
+        const { width, height } = this.scale;
+        
+        // 創建容器來存放所有UI元素
+        this.skillSelectionUI = this.add.container(0, 0);
+        this.skillSelectionUI.setVisible(false);
+        
+        // 半透明背景
+        const bg = this.add.rectangle(
+            width / 2, 
+            height / 2, 
+            width, 
+            height, 
+            0x000000, 
+            0.8
+        );
+        this.skillSelectionUI.add(bg);
+        
+        // 標題
+        const title = this.add.text(
+            width / 2, 
+            50, 
+            '技能選擇', 
+            { fontSize: '36px', color: '#ffffff', fontStyle: 'bold' }
+        ).setOrigin(0.5);
+        this.skillSelectionUI.add(title);
+        
+        // 技能點數顯示
+        const pointsText = this.add.text(
+            width / 2, 
+            90, 
+            `可用技能點數: ${this.characterData.skillPoints || 0}`, 
+            { fontSize: '24px', color: '#ffff00' }
+        ).setOrigin(0.5);
+        this.skillSelectionUI.add(pointsText);
+        
+        // 保存引用以便更新
+        this.characterData.skillUIPointsText = pointsText;
+        
+        // 獲取可用技能列表
+        const skills = getAvailableSkills(this.characterData);
+        
+        // 顯示技能列表
+        const startY = 150;
+        const spacing = 80;
+        
+        skills.forEach((skill, index) => {
+            const y = startY + index * spacing;
+            
+            // 技能背景
+            const skillBg = this.add.rectangle(
+                width / 2, 
+                y, 
+                width * 0.8, 
+                70, 
+                0x333333, 
+                0.9
+            ).setOrigin(0.5);
+            this.skillSelectionUI.add(skillBg);
+            
+            // 技能名稱
+            const nameText = this.add.text(
+                width * 0.2, 
+                y - 15, 
+                `${skill.name} (等級 ${skill.level}/${skill.maxLevel})`, 
+                { fontSize: '20px', color: '#ffffff', fontStyle: 'bold' }
+            ).setOrigin(0, 0.5);
+            this.skillSelectionUI.add(nameText);
+            
+            // 技能描述
+            const descText = this.add.text(
+                width * 0.2, 
+                y + 15, 
+                skill.getDescription(skill.level), 
+                { fontSize: '16px', color: '#aaaaaa' }
+            ).setOrigin(0, 0.5);
+            this.skillSelectionUI.add(descText);
+            
+            // 升級按鈕
+            const upgradeButton = this.add.rectangle(
+                width * 0.8, 
+                y, 
+                100, 
+                40, 
+                skill.level < skill.maxLevel ? 0x006600 : 0x660000, 
+                0.9
+            ).setOrigin(0.5).setInteractive();
+            this.skillSelectionUI.add(upgradeButton);
+            
+            // 按鈕文字
+            const buttonText = this.add.text(
+                width * 0.8, 
+                y, 
+                skill.level < skill.maxLevel ? '升級' : '已滿級', 
+                { fontSize: '18px', color: '#ffffff' }
+            ).setOrigin(0.5);
+            this.skillSelectionUI.add(buttonText);
+            
+            // 設置按鈕事件
+            upgradeButton.on('pointerdown', () => {
+                if (this.characterData.skillPoints > 0 && skill.level < skill.maxLevel) {
+                    // 升級技能
+                    if (upgradeSkill(this.characterData, skill.id)) {
+                        // 更新UI
+                        this.updateSkillUI();
+                        
+                        // 更新射擊間隔
+                        this.updateShootInterval();
+                        
+                        // 更新角色屬性顯示
+                        this.updateCharacterStats();
+                    }
+                }
+            });
+        });
+        
+        // 關閉按鈕
+        const closeButton = this.add.rectangle(
+            width / 2, 
+            height - 50, 
+            200, 
+            60, 
+            0x660000, 
+            0.9
+        ).setOrigin(0.5).setInteractive();
+        this.skillSelectionUI.add(closeButton);
+        
+        const closeText = this.add.text(
+            width / 2, 
+            height - 50, 
+            '關閉', 
+            { fontSize: '24px', color: '#ffffff' }
+        ).setOrigin(0.5);
+        this.skillSelectionUI.add(closeText);
+        
+        closeButton.on('pointerdown', () => {
+            this.toggleSkillSelectionUI();
+        });
+    }
+    
+    // 切換技能選擇界面顯示/隱藏
+    toggleSkillSelectionUI() {
+        this.isSkillSelectionOpen = !this.isSkillSelectionOpen;
+        this.skillSelectionUI.setVisible(this.isSkillSelectionOpen);
+        
+        // 如果打開技能界面，暫停遊戲
+        if (this.isSkillSelectionOpen) {
+            // 更新技能UI
+            this.updateSkillUI();
+            
+            // 暫停怪物生成
+            if (this.monsterSpawnTimer) {
+                this.monsterSpawnTimer.paused = true;
+            }
+            
+            // 暫停射擊
+            if (this.shootTimer) {
+                this.shootTimer.paused = true;
+            }
+        } else {
+            // 恢復怪物生成
+            if (this.monsterSpawnTimer) {
+                this.monsterSpawnTimer.paused = false;
+            }
+            
+            // 恢復射擊
+            if (this.shootTimer && this.isShooting) {
+                this.shootTimer.paused = false;
+            }
+        }
+    }
+    
+    // 更新技能UI
+    updateSkillUI() {
+        // 更新技能點數顯示
+        if (this.characterData.skillPointsText) {
+            this.characterData.skillPointsText.setText(`點數: ${this.characterData.skillPoints || 0}`);
+        }
+        
+        if (this.characterData.skillUIPointsText) {
+            this.characterData.skillUIPointsText.setText(`可用技能點數: ${this.characterData.skillPoints || 0}`);
+        }
+        
+        // 重新創建技能選擇界面
+        if (this.skillSelectionUI) {
+            this.skillSelectionUI.destroy();
+        }
+        this.createSkillSelectionUI();
+        this.skillSelectionUI.setVisible(this.isSkillSelectionOpen);
+    }
+    
+    // 更新角色屬性顯示
+    updateCharacterStats() {
+        // 獲取技能加成
+        const harmBoost = this.characterData.harmBoost || 0;
+        const speedBoost = this.characterData.speedBoost || 0;
+        
+        // 更新屬性顯示
+        this.statsText.setText(
+            `攻擊: ${this.characterData.harm}${harmBoost > 0 ? `+${harmBoost}` : ''}   ` +
+            `速度: ${this.characterData.speed}${speedBoost > 0 ? `+${speedBoost}` : ''}`
+        );
     }
     
     // 創建角色資訊UI
@@ -192,11 +495,16 @@ export class GameStart extends Scene
             { fontSize: '24px', color: '#ffcc00' }
         ).setOrigin(0.5);
         
+        // 獲取技能加成
+        const harmBoost = this.characterData.harmBoost || 0;
+        const speedBoost = this.characterData.speedBoost || 0;
+        
         // 添加屬性
         this.statsText = this.add.text(
             width / 2, 
             90, 
-            `攻擊: ${this.characterData.harm}   速度: ${this.characterData.speed}`, 
+            `攻擊: ${this.characterData.harm}${harmBoost > 0 ? `+${harmBoost}` : ''}   ` +
+            `速度: ${this.characterData.speed}${speedBoost > 0 ? `+${speedBoost}` : ''}`, 
             { fontSize: '20px', color: '#ffffff' }
         ).setOrigin(0.5);
         
@@ -269,22 +577,19 @@ export class GameStart extends Scene
         // 添加溢出的經驗值
         this.characterData.exp = overflowExp;
         
-        // 提升角色屬性
-        this.characterData.harm += 1;
-        this.characterData.speed += 1;
-        
         // 增加技能點數
         if (!this.characterData.skillPoints) {
             this.characterData.skillPoints = 0;
         }
         this.characterData.skillPoints += 1;
         
-        // 根據角色速度調整射擊間隔
-        this.shootInterval = Math.max(50, 200 - (this.characterData.speed * 15));
-        
         // 更新UI
         this.levelText.setText(`等級: ${this.characterData.lv}`);
-        this.statsText.setText(`攻擊: ${this.characterData.harm}   速度: ${this.characterData.speed}`);
+        
+        // 更新技能點數顯示
+        if (this.characterData.skillPointsText) {
+            this.characterData.skillPointsText.setText(`點數: ${this.characterData.skillPoints}`);
+        }
         
         // 顯示升級效果
         this.showLevelUpEffect();
@@ -330,6 +635,26 @@ export class GameStart extends Scene
                 this.player.setAlpha(1).setScale(1);
             }
         });
+        
+        // 顯示獲得技能點數的提示
+        const skillPointText = this.add.text(
+            width / 2,
+            height / 2 + 80,
+            '獲得技能點數 +1',
+            { fontSize: '32px', color: '#00ffff', fontStyle: 'bold' }
+        ).setOrigin(0.5).setAlpha(0);
+        
+        this.tweens.add({
+            targets: skillPointText,
+            alpha: 1,
+            duration: 500,
+            ease: 'Power2',
+            yoyo: true,
+            delay: 300,
+            onComplete: () => {
+                skillPointText.destroy();
+            }
+        });
     }
     
     // 更新經驗值顯示
@@ -347,11 +672,36 @@ export class GameStart extends Scene
             
             if (lastIndex && savedData) {
                 const allCharacters = JSON.parse(savedData);
+                
+                // 確保所有技能數據都被保存
+                const skillsToSave = [
+                    'splitShot', 
+                    'piercingShot', 
+                    'explosion', 
+                    'harmBoost', 
+                    'speedBoost',
+                    'skillPoints',
+                    'lv',
+                    'exp',
+                    'maxExp'
+                ];
+                
+                // 創建一個新的對象來保存當前角色數據
+                const characterToSave = { ...this.characterData };
+                
+                // 確保所有技能數據都被包含
+                skillsToSave.forEach(skillKey => {
+                    if (this.characterData[skillKey] !== undefined) {
+                        characterToSave[skillKey] = this.characterData[skillKey];
+                    }
+                });
+                
                 // 更新當前角色數據
-                allCharacters[parseInt(lastIndex)] = this.characterData;
+                allCharacters[parseInt(lastIndex)] = characterToSave;
+                
                 // 保存回 localStorage
                 localStorage.setItem('characterData', JSON.stringify(allCharacters));
-                console.log('角色數據已保存');
+                console.log('角色數據已保存', characterToSave);
             }
         } catch (error) {
             console.error('保存角色數據失敗', error);
@@ -361,36 +711,63 @@ export class GameStart extends Scene
     shootLightBall() {
         if (!this.isShooting || this.gameOver) return;
         
-        // 創建光球 (這裡假設您有一個名為'lightball'的圖像資源)
-        // 如果沒有，您需要先加載或替換為其他可用的圖像
-        // const lightBall = this.add.image(this.player.x, this.player.y - 50, 'lightball');
+        // 獲取分裂射擊等級
+        const splitShot = this.characterData.splitShot || 0;
+        const totalShots = splitShot + 1; // 基礎1發 + 分裂數量
         
-        // 如果沒有'lightball'圖像，可以用圓形替代
-        // 根據角色的攻擊力調整光球大小和顏色
-        const ballSize = 5 + (this.characterData.harm * 2); // 基礎大小 + 攻擊力加成
-        const ballColor = this.getBallColorByCharacter(this.characterData.name);
+        // 獲取攻擊力加成
+        const harmBoost = this.characterData.harmBoost || 0;
+        const totalDamage = this.characterData.harm + harmBoost;
         
-        const lightBall = this.add.circle(this.player.x, this.player.y - 50, ballSize, ballColor);
+        // 獲取穿透射擊等級
+        const piercingShot = this.characterData.piercingShot || 0;
         
-        // 將光球添加到群組中
-        this.lightBalls.add(lightBall);
+        // 獲取爆炸效果等級
+        const explosion = this.characterData.explosion || 0;
         
-        // 設置光球的傷害值
-        lightBall.setData('damage', this.characterData.harm);
-        
-        // 設置光球向上移動的動畫，速度根據角色速度調整
-        const duration = Math.max(800, 1500 - (this.characterData.speed * 70));
-        
-        this.tweens.add({
-            targets: lightBall,
-            y: -100, // 移動到畫面上方外
-            duration: duration,
-            ease: 'Linear',
-            onComplete: () => {
-                // 動畫完成後移除光球
-                lightBall.destroy();
+        // 根據分裂數量創建多個光球
+        for (let i = 0; i < totalShots; i++) {
+            // 計算光球的水平偏移
+            let offsetX = 0;
+            if (totalShots > 1) {
+                // 計算偏移量，使光球均勻分布
+                offsetX = (i - (totalShots - 1) / 2) * 20;
             }
-        });
+            
+            // 根據角色的攻擊力調整光球大小和顏色
+            const ballSize = 5 + (totalDamage * 2); // 基礎大小 + 攻擊力加成
+            const ballColor = this.getBallColorByCharacter(this.characterData.name);
+            
+            const lightBall = this.add.circle(this.player.x + offsetX, this.player.y - 50, ballSize, ballColor);
+            
+            // 將光球添加到群組中
+            this.lightBalls.add(lightBall);
+            
+            // 設置光球的傷害值
+            lightBall.setData('damage', totalDamage);
+            
+            // 設置穿透次數
+            lightBall.setData('piercing', piercingShot);
+            
+            // 設置爆炸效果
+            lightBall.setData('explosion', explosion);
+            
+            // 設置光球向上移動的動畫，速度根據角色速度調整
+            const speedBoost = this.characterData.speedBoost || 0;
+            const totalSpeed = this.characterData.speed + speedBoost;
+            const duration = Math.max(800, 1500 - (totalSpeed * 70));
+            
+            this.tweens.add({
+                targets: lightBall,
+                y: -100, // 移動到畫面上方外
+                duration: duration,
+                ease: 'Linear',
+                onComplete: () => {
+                    // 動畫完成後移除光球
+                    lightBall.destroy();
+                }
+            });
+        }
     }
     
     // 根據角色名稱獲取光球顏色
@@ -494,7 +871,7 @@ export class GameStart extends Scene
     }
     
     // 處理怪物受傷
-    damageMonster(monster: any, damage: number) {
+    damageMonster(monster: any, damage: number, ball: any) {
         // 檢查怪物是否存在且有效
         if (!monster || !monster.active) return;
         
@@ -542,7 +919,57 @@ export class GameStart extends Scene
                             }
                         }
                     });
+                    
+                    // 檢查是否有爆炸效果
+                    if (ball) {
+                        const explosionLevel = ball.getData('explosion');
+                        if (explosionLevel && explosionLevel > 0) {
+                            this.createExplosion(monster.x, monster.y, explosionLevel);
+                        }
+                    }
                 }
+            }
+        });
+    }
+    
+    // 創建爆炸效果
+    createExplosion(x: number, y: number, level: number) {
+        // 爆炸半徑根據等級決定
+        const radius = level * 20;
+        
+        // 創建爆炸視覺效果
+        const explosion = this.add.circle(x, y, radius, 0xffff00, 0.5);
+        
+        // 爆炸動畫
+        this.tweens.add({
+            targets: explosion,
+            alpha: 0,
+            scale: 1.5,
+            duration: 300,
+            onComplete: () => {
+                explosion.destroy();
+            }
+        });
+        
+        // 檢測爆炸範圍內的怪物
+        this.monsters.getChildren().forEach((monster: any) => {
+            // 檢查怪物是否存在且有效
+            if (!monster || !monster.active) return;
+            
+            // 計算與爆炸中心的距離
+            const distance = Phaser.Math.Distance.Between(
+                monster.x, monster.y,
+                x, y
+            );
+            
+            // 如果在爆炸範圍內
+            if (distance <= radius) {
+                // 根據距離計算傷害 (越近傷害越高)
+                const damagePercent = 1 - (distance / radius);
+                const damage = Math.max(1, Math.floor(level * 2 * damagePercent));
+                
+                // 對怪物造成傷害
+                this.damageMonster(monster, damage, null);
             }
         });
     }
@@ -647,7 +1074,7 @@ export class GameStart extends Scene
     }
     
     update() {
-        if (this.gameOver) return;
+        if (this.gameOver || this.isSkillSelectionOpen) return;
         
         const { width, height } = this.scale;
         
@@ -722,11 +1149,18 @@ export class GameStart extends Scene
                 if (distanceToBall < size + ballRadius) {
                     // 光球命中怪物
                     const damage = ball.getData('damage') || 1;
-                    this.damageMonster(monster, damage);
+                    this.damageMonster(monster, damage, ball);
                     
-                    // 移除光球
-                    if (ball && ball.active) {
-                        ball.destroy();
+                    // 檢查穿透
+                    let piercing = ball.getData('piercing') || 0;
+                    if (piercing > 0) {
+                        // 減少穿透次數
+                        ball.setData('piercing', piercing - 1);
+                    } else {
+                        // 移除光球
+                        if (ball && ball.active) {
+                            ball.destroy();
+                        }
                     }
                 }
             });

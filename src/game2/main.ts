@@ -13,6 +13,9 @@ let gameInstance: Phaser.Game | null = null;
 const BASE_WIDTH = 375;
 const BASE_HEIGHT = 667;
 
+// 安全區域邊距（百分比）
+const SAFE_ZONE_MARGIN = 0.05; // 5% 的邊距
+
 var winH = window.innerHeight
 var winW = window.innerWidth
 var dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -50,6 +53,10 @@ function calculateCanvasSize() {
         console.log('橫屏設備', canW, canH);
 
     }
+
+    // 應用安全區域邊距，讓畫面往內縮
+    canW = canW * (1 - SAFE_ZONE_MARGIN * 2);
+    canH = canH * (1 - SAFE_ZONE_MARGIN * 2);
     
     bl = canW / 640;
 

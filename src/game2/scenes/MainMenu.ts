@@ -1,4 +1,5 @@
 import { GameObjects, Scene, Input } from 'phaser';
+import { applyAllSkills } from './utils/skill';
 
 export class MainMenu extends Scene
 {
@@ -19,14 +20,11 @@ export class MainMenu extends Scene
     statsText: GameObjects.Text;
     leftButton: GameObjects.Image | GameObjects.Triangle;
     rightButton: GameObjects.Image | GameObjects.Triangle;
-    upgradeHarmButton: GameObjects.Rectangle;
-    upgradeSpeedButton: GameObjects.Rectangle;
-    upgradeHarmText: GameObjects.Text;
-    upgradeSpeedText: GameObjects.Text;
-    startGameButton: GameObjects.Rectangle; // 新增開始遊戲按鈕
-    startGameText: GameObjects.Text; // 新增開始遊戲文字
-
-    test:GameObjects.Text;
+    startGameButton: GameObjects.Rectangle; // 開始遊戲按鈕
+    startGameText: GameObjects.Text; // 開始遊戲文字
+    skillTipText: GameObjects.Text; // 技能提示文字
+    resetButton: GameObjects.Rectangle; // 重置按鈕
+    resetText: GameObjects.Text; // 重置文字
 
     constructor ()
     {
@@ -54,6 +52,9 @@ export class MainMenu extends Scene
             try {
                 this.characterData = JSON.parse(savedData);
                 console.log('從本機讀取角色資料成功');
+                
+                // 確保所有角色都有技能相關屬性
+                this.initCharactersSkillData();
             } catch (error) {
                 console.error('解析本機角色資料失敗，創建新資料', error);
                 this.createDefaultCharacterData();
@@ -62,6 +63,30 @@ export class MainMenu extends Scene
             console.log('本機沒有角色資料，創建新資料');
             this.createDefaultCharacterData();
         }
+    }
+
+    // 初始化所有角色的技能相關數據
+    initCharactersSkillData() {
+        this.characterData.forEach(character => {
+            // 確保有技能點數屬性
+            if (character.skillPoints === undefined) {
+                character.skillPoints = 0;
+            }
+            
+            // 確保所有技能屬性都存在
+            const skillKeys = ['splitShot', 'piercingShot', 'explosion', 'harmBoost', 'speedBoost'];
+            skillKeys.forEach(skillKey => {
+                if (character[skillKey] === undefined) {
+                    character[skillKey] = 0;
+                }
+            });
+            
+            // 應用所有已學習的技能效果
+            applyAllSkills(character);
+        });
+        
+        // 保存更新後的數據
+        this.saveCharacterData();
     }
 
     // 創建默認角色資料
@@ -121,8 +146,19 @@ export class MainMenu extends Scene
     // 儲存角色資料到本機
     saveCharacterData() {
         try {
+            // 確保所有技能數據都被保存
+            this.characterData.forEach(character => {
+                // 確保所有技能屬性都存在
+                const skillKeys = ['splitShot', 'piercingShot', 'explosion', 'harmBoost', 'speedBoost', 'skillPoints', 'lv', 'exp', 'maxExp'];
+                skillKeys.forEach(skillKey => {
+                    if (character[skillKey] === undefined) {
+                        character[skillKey] = 0;
+                    }
+                });
+            });
+            
             localStorage.setItem('characterData', JSON.stringify(this.characterData));
-            console.log('角色資料已儲存到本機');
+            console.log('角色資料已儲存到本機', this.characterData);
         } catch (error) {
             console.error('儲存角色資料到本機失敗', error);
         }
@@ -132,12 +168,6 @@ export class MainMenu extends Scene
     {
         // 使用讀取或創建的角色資料來渲染選角畫面
         this.renderCharacterSelection();
-
-        // this.test = this.add.text(200,200,'升級按鈕')
-        // this.test.setInteractive()
-        // this.test.on('pointerdown', () => {
-        //     this.addExperience(1);
-        // });
     }
     
     // 渲染選角畫面
@@ -198,63 +228,32 @@ export class MainMenu extends Scene
             { fontSize: '32px', color: '#00ff00' }
         ).setOrigin(0.5);
         
+        // 獲取技能加成
+        const harmBoost = currentCharacter.harmBoost || 0;
+        const speedBoost = currentCharacter.speedBoost || 0;
+        
         // 添加角色屬性文字
         this.statsText = this.add.text(
             width / 2, 
             height / 2 + 410, 
-            `攻擊: ${currentCharacter.harm}   速度: ${currentCharacter.speed}`, 
+            `攻擊: ${currentCharacter.harm}${harmBoost > 0 ? `+${harmBoost}` : ''}   ` +
+            `速度: ${currentCharacter.speed}${speedBoost > 0 ? `+${speedBoost}` : ''}`, 
             { fontSize: '32px', color: '#ffffff' }
         ).setOrigin(0.5);
         
-        // 添加升級按鈕 - 如果有技能點數
+        // 如果有技能點數，添加提示文字
         if (currentCharacter.skillPoints > 0) {
-            // 升級攻擊按鈕
-            this.upgradeHarmButton = this.add.rectangle(
-                width / 2 - 80, 
+            this.skillTipText = this.add.text(
+                width / 2, 
                 height / 2 + 470, 
-                120, 
-                30, 
-                0x4CAF50, 
-                1
-            ).setOrigin(0.5).setInteractive();
-            
-            this.upgradeHarmText = this.add.text(
-                width / 2 - 80, 
-                height / 2 + 470, 
-                '提升攻擊', 
-                { fontSize: '28px', color: '#ffffff' }
+                '進入遊戲後可以使用技能點數提升能力', 
+                { fontSize: '24px', color: '#ffff00', fontStyle: 'bold' }
             ).setOrigin(0.5);
-            
-            // 升級速度按鈕
-            this.upgradeSpeedButton = this.add.rectangle(
-                width / 2 + 80, 
-                height / 2 + 470, 
-                120, 
-                30, 
-                0x2196F3, 
-                1
-            ).setOrigin(0.5).setInteractive();
-            
-            this.upgradeSpeedText = this.add.text(
-                width / 2 + 80, 
-                height / 2 + 470, 
-                '提升速度', 
-                { fontSize: '28px', color: '#ffffff' }
-            ).setOrigin(0.5);
-            
-            // 添加按鈕點擊事件
-            this.upgradeHarmButton.on('pointerdown', () => {
-                this.upgradeCharacterStat('harm');
-            });
-            
-            this.upgradeSpeedButton.on('pointerdown', () => {
-                this.upgradeCharacterStat('speed');
-            });
         }
 
-        //添加開始遊戲按鈕
+        // 添加開始遊戲按鈕
         this.startGameButton = this.add.rectangle(
-            width / 2,
+            width / 2 - 120,
             height / 2 + 100,
             200,
             60,
@@ -263,7 +262,7 @@ export class MainMenu extends Scene
         ).setOrigin(0.5).setInteractive();
         
         this.startGameText = this.add.text(
-            width / 2,
+            width / 2 - 120,
             height / 2 + 100,
             '開始遊戲',
             { fontSize: '36px', color: '#ffffff', fontStyle: 'bold' }
@@ -272,6 +271,28 @@ export class MainMenu extends Scene
         // 添加開始遊戲按鈕點擊事件
         this.startGameButton.on('pointerdown', () => {
             this.startGame();
+        });
+        
+        // 添加重置角色按鈕
+        this.resetButton = this.add.rectangle(
+            width / 2 + 120,
+            height / 2 + 100,
+            200,
+            60,
+            0x3F51B5,
+            1
+        ).setOrigin(0.5).setInteractive();
+        
+        this.resetText = this.add.text(
+            width / 2 + 120,
+            height / 2 + 100,
+            '重置角色',
+            { fontSize: '36px', color: '#ffffff', fontStyle: 'bold' }
+        ).setOrigin(0.5);
+        
+        // 添加重置角色按鈕點擊事件
+        this.resetButton.on('pointerdown', () => {
+            this.resetCharacter();
         });
         
         // 添加左右切換按鈕
@@ -309,6 +330,133 @@ export class MainMenu extends Scene
         this.input.on('pointermove', this.moveSwipe, this);
     }
 
+    // 重置當前選中的角色
+    resetCharacter() {
+        // 獲取當前選中的角色
+        const currentCharacter = this.characterData[this.currentIndex];
+        
+        // 確認對話框
+        const { width, height } = this.scale;
+        
+        // 創建確認對話框背景
+        const confirmBg = this.add.rectangle(
+            width / 2,
+            height / 2,
+            width * 0.8,
+            height * 0.3,
+            0x000000,
+            0.9
+        ).setOrigin(0.5).setInteractive();
+        
+        // 創建確認文字
+        const confirmText = this.add.text(
+            width / 2,
+            height / 2 - 50,
+            `確定要重置 ${currentCharacter.name} 的等級和技能點數嗎？`,
+            { fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }
+        ).setOrigin(0.5);
+        
+        // 創建確認按鈕
+        const yesButton = this.add.rectangle(
+            width / 2 - 100,
+            height / 2 + 30,
+            150,
+            50,
+            0x4CAF50,
+            1
+        ).setOrigin(0.5).setInteractive();
+        
+        const yesText = this.add.text(
+            width / 2 - 100,
+            height / 2 + 30,
+            '確定',
+            { fontSize: '24px', color: '#ffffff' }
+        ).setOrigin(0.5);
+        
+        // 創建取消按鈕
+        const noButton = this.add.rectangle(
+            width / 2 + 100,
+            height / 2 + 30,
+            150,
+            50,
+            0xF44336,
+            1
+        ).setOrigin(0.5).setInteractive();
+        
+        const noText = this.add.text(
+            width / 2 + 100,
+            height / 2 + 30,
+            '取消',
+            { fontSize: '24px', color: '#ffffff' }
+        ).setOrigin(0.5);
+        
+        // 設置按鈕事件
+        yesButton.on('pointerdown', () => {
+            // 重置角色數據
+            this.characterData[this.currentIndex] = {
+                name: currentCharacter.name,
+                harm: 1,
+                speed: 1,
+                lv: 1,
+                exp: 0,
+                maxExp: 10,
+                skillPoints: 0,
+                // 明確重置所有技能等級
+                splitShot: 0,
+                piercingShot: 0,
+                explosion: 0,
+                harmBoost: 0,
+                speedBoost: 0
+            };
+            
+            // 應用技能效果
+            applyAllSkills(this.characterData[this.currentIndex]);
+            
+            // 保存數據
+            this.saveCharacterData();
+            
+            // 更新顯示
+            this.updateCharacterDisplay();
+            
+            // 移除確認對話框
+            confirmBg.destroy();
+            confirmText.destroy();
+            yesButton.destroy();
+            yesText.destroy();
+            noButton.destroy();
+            noText.destroy();
+            
+            // 顯示重置成功提示
+            const successText = this.add.text(
+                width / 2,
+                height / 2,
+                '角色已重置',
+                { fontSize: '32px', color: '#4CAF50', fontStyle: 'bold' }
+            ).setOrigin(0.5);
+            
+            // 淡出效果
+            this.tweens.add({
+                targets: successText,
+                alpha: 0,
+                y: height / 2 - 50,
+                duration: 1500,
+                onComplete: () => {
+                    successText.destroy();
+                }
+            });
+        });
+        
+        noButton.on('pointerdown', () => {
+            // 移除確認對話框
+            confirmBg.destroy();
+            confirmText.destroy();
+            yesButton.destroy();
+            yesText.destroy();
+            noButton.destroy();
+            noText.destroy();
+        });
+    }
+
     // 開始遊戲
     startGame() {
         // 獲取當前選中的角色資料
@@ -344,126 +492,34 @@ export class MainMenu extends Scene
         // 更新角色圖像
         this.player.setTexture(currentCharacter.name);
         
+        // 獲取技能加成
+        const harmBoost = currentCharacter.harmBoost || 0;
+        const speedBoost = currentCharacter.speedBoost || 0;
+        
         // 更新文字資訊
         this.nameText.setText(currentCharacter.name);
         this.levelText.setText(`等級: ${currentCharacter.lv}`);
         this.expText.setText(`經驗: ${currentCharacter.exp}/${currentCharacter.maxExp}`);
         this.skillPointsText.setText(`技能點數: ${currentCharacter.skillPoints}`);
-        this.statsText.setText(`攻擊: ${currentCharacter.harm}   速度: ${currentCharacter.speed}`);
+        this.statsText.setText(
+            `攻擊: ${currentCharacter.harm}${harmBoost > 0 ? `+${harmBoost}` : ''}   ` +
+            `速度: ${currentCharacter.speed}${speedBoost > 0 ? `+${speedBoost}` : ''}`
+        );
         
-        // 更新升級按鈕
-        this.updateUpgradeButtons();
-    }
-    
-    // 更新升級按鈕
-    updateUpgradeButtons() {
-        const currentCharacter = this.characterData[this.currentIndex];
-        
-        // 移除舊的按鈕
-        if (this.upgradeHarmButton) {
-            this.upgradeHarmButton.destroy();
-            this.upgradeHarmText.destroy();
+        // 更新技能提示文字
+        if (this.skillTipText) {
+            this.skillTipText.destroy();
         }
         
-        if (this.upgradeSpeedButton) {
-            this.upgradeSpeedButton.destroy();
-            this.upgradeSpeedText.destroy();
-        }
-        
-        // 如果有技能點數，添加新的按鈕
         if (currentCharacter.skillPoints > 0) {
             const { width, height } = this.scale;
-            
-            // 升級攻擊按鈕
-            this.upgradeHarmButton = this.add.rectangle(
-                width / 2 - 80, 
+            this.skillTipText = this.add.text(
+                width / 2, 
                 height / 2 + 470, 
-                120, 
-                30, 
-                0x4CAF50, 
-                1
-            ).setOrigin(0.5).setInteractive();
-            
-            this.upgradeHarmText = this.add.text(
-                width / 2 - 80, 
-                height / 2 + 470, 
-                '提升攻擊', 
-                { fontSize: '14px', color: '#ffffff' }
+                '進入遊戲後可以使用技能點數提升能力', 
+                { fontSize: '24px', color: '#ffff00', fontStyle: 'bold' }
             ).setOrigin(0.5);
-            
-            // 升級速度按鈕
-            this.upgradeSpeedButton = this.add.rectangle(
-                width / 2 + 80, 
-                height / 2 + 470, 
-                120, 
-                30, 
-                0x2196F3, 
-                1
-            ).setOrigin(0.5).setInteractive();
-            
-            this.upgradeSpeedText = this.add.text(
-                width / 2 + 80, 
-                height / 2 + 470, 
-                '提升速度', 
-                { fontSize: '14px', color: '#ffffff' }
-            ).setOrigin(0.5);
-            
-            // 添加按鈕點擊事件
-            this.upgradeHarmButton.on('pointerdown', () => {
-                this.upgradeCharacterStat('harm');
-            });
-            
-            this.upgradeSpeedButton.on('pointerdown', () => {
-                this.upgradeCharacterStat('speed');
-            });
         }
-    }
-    
-    // 升級角色屬性
-    upgradeCharacterStat(stat: 'harm' | 'speed') {
-        const currentCharacter = this.characterData[this.currentIndex];
-        
-        if (currentCharacter.skillPoints > 0) {
-            // 提升指定屬性
-            currentCharacter[stat] += 1;
-            currentCharacter.skillPoints -= 1;
-            
-            // 更新顯示
-            this.statsText.setText(`攻擊: ${currentCharacter.harm}   速度: ${currentCharacter.speed}`);
-            this.skillPointsText.setText(`技能點數: ${currentCharacter.skillPoints}`);
-            
-            // 更新升級按鈕
-            this.updateUpgradeButtons();
-            
-            // 儲存更新後的角色資料
-            this.saveCharacterData();
-        }
-    }
-    
-    // 添加經驗值 (這個方法可以在遊戲中調用)
-    addExperience(exp: number) {
-        const currentCharacter = this.characterData[this.currentIndex];
-        currentCharacter.exp += exp;
-        
-        // 檢查是否升級
-        while (currentCharacter.exp >= currentCharacter.maxExp) {
-            // 升級
-            currentCharacter.exp -= currentCharacter.maxExp;
-            currentCharacter.lv += 1;
-            currentCharacter.skillPoints += 1;
-            currentCharacter.maxExp = currentCharacter.lv * 10; // 更新下一級所需經驗
-        }
-        
-        // 更新顯示
-        this.levelText.setText(`等級: ${currentCharacter.lv}`);
-        this.expText.setText(`經驗: ${currentCharacter.exp}/${currentCharacter.maxExp}`);
-        this.skillPointsText.setText(`技能點數: ${currentCharacter.skillPoints}`);
-        
-        // 更新升級按鈕
-        this.updateUpgradeButtons();
-        
-        // 儲存更新後的角色資料
-        this.saveCharacterData();
     }
     
     // 滑動相關變數

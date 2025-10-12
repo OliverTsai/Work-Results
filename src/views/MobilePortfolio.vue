@@ -15,10 +15,10 @@ const games = ref([
   },
   {
     id: 2,
-    title: '平台跳躍',
-    description: '2D 平台跳躍遊戲，收集金幣並避開障礙物',
+    title: '方塊消除',
+    description: '消除方塊的遊戲',
     image: 'game2.jpg',
-    link: '/games/platform-jumper'
+    link: 'game3'
   }
 ]);
 

@@ -7,6 +7,8 @@ import MobileHome from '@/views/MobilePortfolio.vue';
 
 import gameView from '@/views/gameView.vue';
 import game2View from '@/views/game2View.vue';
+import game3View from '@/views/game3View.vue';
+
 import gameTurboView from '@/views/gameTurboView.vue';
 import LoginView from '@/views/LoginView.vue';
 import LoginLineView from '@/views/LoginLineView.vue';
@@ -139,6 +141,12 @@ const routes = [
     path: '/game2',
     name: 'game2',
     component: store.isMobile ? game2View : game2View,
+  },
+  // 遊戲3頁面
+  {
+    path: '/game3',
+    name: 'game3',
+    component: store.isMobile ? game3View : game3View,
   },
   {
     path: '/gameTurbo',

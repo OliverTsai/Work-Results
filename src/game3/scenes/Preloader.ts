@@ -62,10 +62,10 @@ export class Preloader extends Scene{
         this.load.image('祭司', 'https://olivertsai.github.io/Work-Results/assets/picture/user/祭司_sat1-1.png');
         this.load.image('騎士', 'https://olivertsai.github.io/Work-Results/assets/picture/user/knight1_1_sat.png');
 
-        this.load.image('block-red', '/public/assets/picture/red.png');
-        this.load.image('block-blue', '/public/assets/picture/blue.png');
-        this.load.image('block-green', '/public/assets/picture/green.png');
-        this.load.image('block-yellow', '/public/assets/picture/yellow.png');
+        this.load.image('block-red', 'https://olivertsai.github.io/Work-Results/assets/picture/red.png');
+        this.load.image('block-blue', 'https://olivertsai.github.io/Work-Results/assets/picture/blue.png');
+        this.load.image('block-green', 'https://olivertsai.github.io/Work-Results/assets/picture/green.png');
+        this.load.image('block-yellow', 'https://olivertsai.github.io/Work-Results/assets/picture/yellow.png');
     }
 
     create()

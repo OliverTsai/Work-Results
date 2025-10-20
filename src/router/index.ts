@@ -29,6 +29,8 @@ import test from '@/views/LoginTestView.vue';
 
 import TechnologyMatrix from '@/views/TechnologyMatrixView.vue';
 import mTechnologyMatrix from '@/views/m/mTechnologyMatrixView.vue';
+import BackendTechnologyMatrix from '@/views/BackendTechnologyMatrixView.vue';
+import mBackendTechnologyMatrix from '@/views/m/mBackendTechnologyMatrixView.vue';
 
 import PageA from '@/views/pageA.vue';
 const PageB = () => import('@/views/pageB.vue');
@@ -121,6 +123,11 @@ const routes = [
     path: '/Technology_Matrix',
     name: 'Technology_Matrix',
     component: store.isMobile ? mTechnologyMatrix : TechnologyMatrix,
+  },
+  {
+    path: '/Backend_TechnologyMatrix',
+    name: 'Backend_TechnologyMatrix',
+    component: store.isMobile ? mBackendTechnologyMatrix : BackendTechnologyMatrix,
   },
   {
     path: '/play_log',

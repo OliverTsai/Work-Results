@@ -34,6 +34,7 @@
         "@popperjs/core": "^2.11.8",
         "bootstrap": "^5.3.5",
         "bootstrap-vue-3": "^0.5.1",
+        "chart.js": "^4.5.1",
         "phaser": "^3.87.0",
         "pinia": "^3.0.1",
         "pinia-plugin-persistedstate": "^4.3.0",
@@ -43,6 +44,7 @@
     "devDependencies": {
         "@testing-library/vue": "^8.1.0",
         "@tsconfig/node20": "^20.1.2",
+        "@types/chart.js": "^2.9.41",
         "@types/node": "^20.11.20",
         "@vitejs/plugin-vue": "^5.0.4",
         "@vue/test-utils": "^2.4.6",

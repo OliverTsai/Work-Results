@@ -27,6 +27,9 @@ import Store from '@/views/storeView.vue';
 import WebSocketTester from '@/views/WebSocketTester.vue';
 import test from '@/views/LoginTestView.vue';
 
+import TechnologyMatrix from '@/views/TechnologyMatrixView.vue';
+import mTechnologyMatrix from '@/views/m/mTechnologyMatrixView.vue';
+
 import PageA from '@/views/pageA.vue';
 const PageB = () => import('@/views/pageB.vue');
 
@@ -115,6 +118,11 @@ const routes = [
     component: store.isMobile ? Store : Store,
   },
   {
+    path: '/Technology_Matrix',
+    name: 'Technology_Matrix',
+    component: store.isMobile ? mTechnologyMatrix : TechnologyMatrix,
+  },
+  {
     path: '/play_log',
     name: 'play_log',
     component: store.isMobile ? PlayLog : PlayLog,
@@ -163,7 +171,7 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory('/Work-Results/'),
-  routes,
+  routes:routes,
 })
 
 

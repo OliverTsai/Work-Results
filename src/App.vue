@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useWebSocketStore } from "@/store/websocketStore";
 import { onMounted, onUnmounted, provide } from 'vue';
+import MainFrame from './layouts/MainFrame.vue';
 // import Phaser from 'phaser';
 // import { ref, toRaw } from 'vue';
 // import type { MainMenu } from './game/scenes/MainMenu';
@@ -95,7 +96,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <router-view />
+    <MainFrame>
+        <router-view />
+    </MainFrame>
     <!-- <router-view /> -->
     <!-- <PhaserGame ref="phaserRef" @current-active-scene="currentScene" /> -->
     <!--<div>
@@ -116,8 +119,26 @@ onUnmounted(() => {
 
 <style>
 #app {
-  min-height: 100vh;
-  background-color: black;
-  z-index: -3;
+    min-height: 100vh;
+    background-color: #f5f5f5; /* 更改為較淺的背景色 */
+    z-index: -3;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* 全局基本樣式 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* 移除所有連結的預設樣式 */
+a {
+    text-decoration: none;
 }
 </style>

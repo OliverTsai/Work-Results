@@ -3,32 +3,44 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const loading = ref(true);
-const message = ref('前端網頁...');
+const loading = ref(false); // 改為 false，因為我們不需要顯示加載中
+const name = ref('蔡福人'); // 您的名字
+const title = ref('軟體工程師 / 前後端工程師'); // 您的標語
+const introduction = ref('我是一名熱愛技術的全端開發者，擅長 Vue.js、TypeScript 和後端開發。擁有 5 年開發經驗，致力於打造高品質的使用者體驗。'); // 簡短自我介紹
 
 onMounted(async () => {
-  router.push('/');
+  // 可以在這裡添加頁面載入時的邏輯
 });
 </script>
 
 <template>
-  <div class="login-container">
-    <div class="login-box">
-      <div class="message">
-        <p>{{ message }}</p>
-        <div class="spinner" v-if="loading"></div>
+  <div class="home-container">
+    <div class="profile-box">
+      <div class="profile-image">
+        <img src="@/assets/picture/user/MTXX_20200907183540.jpg" alt="個人照片" />
+      </div>
+      <div class="profile-info">
+        <h1 class="name">{{ name }}</h1>
+        <h2 class="title">{{ title }}</h2>
+        <div class="divider"></div>
+        <p class="introduction">{{ introduction }}</p>
+        <div class="social-links">
+          <a href="https://github.com/yourusername" target="_blank" class="social-link">GitHub</a>
+          <a href="https://linkedin.com/in/yourprofile" target="_blank" class="social-link">LinkedIn</a>
+          <a href="mailto:your.email@example.com" class="social-link">Email</a>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.login-container {
+.home-container {
   position: relative;
-  background-image: url('@/assets/picture/loding_bg.png');
-  background-size: cover; /* 背景自動縮放填滿 */
-  background-position: center; /* 背景居中 */
-  background-repeat: no-repeat; /* 背景不重複 */
+  background-image: url('@/assets/picture/loding_bg.png'); /* 您可以更換為適合的背景圖片 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,43 +49,90 @@ onMounted(async () => {
   background-color: #f5f5f5;
 }
 
-.login-box {
-  /* background-color: white; */
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.profile-box {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   text-align: center;
-  max-width: 400px;
+  max-width: 800px;
   width: 90%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
 }
 
-.logo {
-  margin-bottom: 2rem;
+@media (max-width: 768px) {
+  .profile-box {
+    flex-direction: column;
+  }
 }
 
-.logo h1 {
-  font-size: 1.8rem;
-  color: #333;
-  margin: 0;
+.profile-image {
+  flex-shrink: 0;
 }
 
-.message {
-  position: absolute;
-  top: 56%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 20px;
-  border-radius: 10px;
-  width: 300px;
+.profile-image img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.message p {
-  font-size: 1.5rem;
+.profile-info {
+  text-align: left;
+  flex-grow: 1;
+}
+
+.name {
+  font-size: 2.5rem;
   font-weight: bold;
-  color: #ffffff;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-  margin-bottom: 10px;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+}
+
+.title {
+  font-size: 1.5rem;
+  color: #666;
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+}
+
+.divider {
+  height: 3px;
+  background-color: #3498db;
+  width: 60px;
+  margin-bottom: 1.5rem;
+}
+
+.introduction {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.social-link:hover {
+  background-color: #2980b9;
 }
 
 .spinner {

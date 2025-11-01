@@ -3,7 +3,7 @@ import { store } from '@/store';
 import HomeView from '@/views/HomeView.vue';
 
 import WebHome from '@/views/WebPortfolio.vue';
-import MobileHome from '@/views/MobilePortfolio.vue';
+import mWebHome from '@/views/m/mWebHomeView.vue';
 
 import gameView from '@/views/gameView.vue';
 import game2View from '@/views/game2View.vue';
@@ -40,7 +40,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: store.isMobile ? MobileHome : WebHome,
+    component: store.isMobile ? mWebHome : WebHome,
   },
   {
     path: '/gameHome',

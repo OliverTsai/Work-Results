@@ -4,7 +4,7 @@
     "version": "1.2.1",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/phaserjs/template-vue-ts.git"
+        "url": "git+https://github.com/OliverTsai/Work-Results.git"
     },
     "author": "Phaser Studio <support@phaser.io> (https://phaser.io/)",
     "license": "MIT",

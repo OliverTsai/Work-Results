@@ -178,7 +178,7 @@ body {
 }
 
 .btn.primary:hover {
-  background-color: darken(#4FC08D, 5%);
+  background-color:#4FC08D;
 }
 
 .btn.secondary {

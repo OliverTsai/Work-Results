@@ -2,6 +2,8 @@
 import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
+import img from '@/assets/picture/user/3.png';
+
 const router = useRouter();
 const activeFilter = ref('all');
 
@@ -10,7 +12,7 @@ const projects = ref([
     id: 1,
     title: 'Phaser 太空射擊遊戲',
     description: '使用 Phaser 3 開發的經典太空射擊遊戲，包含多種敵人類型和武器升級系統',
-    image: 'game1.jpg',
+    image: img,
     link: '/games/space-shooter',
     type: 'game'
   },
@@ -18,7 +20,7 @@ const projects = ref([
     id: 2,
     title: '2D 平台跳躍遊戲',
     description: '具有物理引擎的平台跳躍遊戲，玩家需要收集金幣並避開障礙物',
-    image: 'game2.jpg',
+    image: img,
     link: '/games/platform-jumper',
     type: 'game'
   },
@@ -26,7 +28,7 @@ const projects = ref([
     id: 3,
     title: '粒子特效展示',
     description: '使用 Phaser 的粒子系統創建的各種視覺特效展示',
-    image: 'effect1.jpg',
+    image: img,
     link: '/effects/particles',
     type: 'effect'
   },
@@ -34,7 +36,7 @@ const projects = ref([
     id: 4,
     title: '動態光影效果',
     description: '實現動態光影和色彩變換的視覺特效',
-    image: 'effect2.jpg',
+    image: img,
     link: '/effects/lighting',
     type: 'effect'
   }
@@ -94,7 +96,7 @@ onMounted(() => {
 
     <div class="projects-container">
       <div v-for="project in filteredProjects" :key="project.id" class="project-card" @click="openProject(project.link)">
-        <div class="project-image" :style="{ backgroundImage: `url(@/assets/images/${project.image})` }">
+        <div class="project-image" :style="{ backgroundImage: `url(${project.image})` }">
           <div class="project-type" :class="project.type">{{ project.type === 'game' ? '遊戲' : '特效' }}</div>
         </div>
         <div class="project-info">

@@ -1,0 +1,25 @@
+# 忽略建置輸出目錄
+/dist
+
+# 忽略依賴目錄
+/node_modules
+
+# 忽略日誌檔案
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 編輯器目錄和檔案
+.idea
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 本地環境檔案
+*.local

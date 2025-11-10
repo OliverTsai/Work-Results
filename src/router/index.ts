@@ -1,9 +1,14 @@
 import { createRouter, createWebHistory  } from 'vue-router'
 import { store } from '@/store';
-import HomeView from '@/views/HomeView.vue';
 
-import WebHome from '@/views/WebPortfolio.vue';
-import mWebHome from '@/views/m/mWebHomeView.vue';
+import HomeView from '@/views/HomeView.vue';
+import mHomeView from '@/views/m/mHomeView.vue';
+
+import AboutView from '@/views/AboutView.vue';
+import mAboutView from '@/views/m/mAboutView.vue';
+
+import Portfolio from '@/views/PortfolioView.vue';
+import mPortfolio from '@/views/m/mPortfolioView.vue';
 
 import gameView from '@/views/gameView.vue';
 import game2View from '@/views/game2View.vue';
@@ -40,7 +45,17 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: store.isMobile ? mWebHome : WebHome,
+    component: store.isMobile ? mHomeView : HomeView,
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: store.isMobile ? mAboutView : AboutView,
+  },
+  {
+    path: '/portfolio',
+    name: 'portfolio',
+    component: store.isMobile ? mPortfolio : Portfolio,
   },
   {
     path: '/gameHome',
@@ -68,6 +83,10 @@ const routes = [
     path: '/pageA',
     name: 'pageA',
     component: store.isMobile ? PageA : PageA,
+    meta: {
+      layout: 'main',
+      showFooter: false
+    }
   },
   {
     path: '/pageB',
@@ -156,6 +175,10 @@ const routes = [
     path: '/game2',
     name: 'game2',
     component: store.isMobile ? game2View : game2View,
+    meta: {
+      showFooter: false,
+      showHeader: false  // 頭部和底部都不顯示
+    }
   },
   // 遊戲3頁面
   {

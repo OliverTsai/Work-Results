@@ -20,28 +20,15 @@
         <!-- 側邊導航菜單 -->
         <div class="side-menu" :class="{ 'open': isMenuOpen }">
             <div class="menu-header">
-                <div class="close-btn" @click="toggleMenu">×</div>
+                <div class="close-btn" @click="toggleMenu"></div>
             </div>
             <nav class="menu-items">
                 <router-link to="/" @click="closeMenu">首頁</router-link>
                 <router-link to="/about" @click="closeMenu">關於我</router-link>
                 <router-link to="/skills" @click="closeMenu">技能</router-link>
                 <router-link to="/experience" @click="closeMenu">經歷</router-link>
-                <router-link to="/projects" @click="closeMenu">作品集</router-link>
+                <router-link to="/portfolio" @click="closeMenu">作品集</router-link>
             </nav>
-            <div class="menu-footer">
-                <div class="social-links">
-                <a href="https://github.com/yourusername" target="_blank">
-                    <!-- <img src="@/assets/picture/github-icon.svg" alt="GitHub"> -->
-                </a>
-                <a href="https://linkedin.com/in/yourprofile" target="_blank">
-                    <!-- <img src="@/assets/picture/linkedin-icon.svg" alt="LinkedIn"> -->
-                </a>
-                <a href="mailto:your.email@example.com">
-                    <!-- <img src="@/assets/picture/email-icon.svg" alt="Email"> -->
-                </a>
-                </div>
-            </div>
         </div>
         
         <!-- 遮罩層 -->

@@ -355,7 +355,7 @@ onMounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  height: 100%;
+  height: 100vh;
   overflow-y: auto;
   font-family: 'Noto Sans TC', sans-serif;
   color: #333;

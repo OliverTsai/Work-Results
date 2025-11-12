@@ -1,16 +1,28 @@
 <template>
   <div class="desktop-frame">
-    <dHead />
+    <dHead v-if="showDeskHeader" />
     <main class="content">
       <slot></slot>
     </main>
-    <dFoot />
+    <dFoot v-if="showDeskFooter" />
   </div>
 </template>
 
 <script setup lang="ts">
 import dHead from '@/components/d/dHead.vue';
 import dFoot from '@/components/d/dFoot.vue';
+
+// 新增 props 來控制是否顯示頂部和底部導航欄
+defineProps({
+  showDeskFooter: {
+    type: Boolean,
+    default: true
+  },
+  showDeskHeader: {
+    type: Boolean,
+    default: true
+  }
+});
 </script>
 
 <style lang="scss" scoped>

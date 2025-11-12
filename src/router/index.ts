@@ -14,6 +14,13 @@ import gameView from '@/views/gameView.vue';
 import game2View from '@/views/game2View.vue';
 import game3View from '@/views/game3View.vue';
 
+//特效
+import Rotation from '@/views/effect/EffectRotationView.vue';
+import mRotation from '@/views/effect/m/mEffectRotationView.vue';
+
+import Slot from '@/views/effect/SlotMachineView.vue';
+import mSlot from '@/views/effect/m/mSlotMachineView.vue';
+
 import gameTurboView from '@/views/gameTurboView.vue';
 import LoginView from '@/views/LoginView.vue';
 import LoginLineView from '@/views/LoginLineView.vue';
@@ -78,6 +85,29 @@ const routes = [
     path: '/choose',
     name: 'choose',
     component: store.isMobile ? Choose : Choose,
+  },
+  //特效頁面
+  {
+    path: '/rotation',
+    name: 'rotation',
+    component: store.isMobile ? mRotation : Rotation,
+    meta: {
+      showFooter: false,
+      showHeader: false,  // 頭部和底部都不顯示
+      showDeskHeader: false,
+      showDeskFooter: false
+    }
+  },
+  {
+    path: '/slot',
+    name: 'slot',
+    component: store.isMobile ? mSlot : Slot,
+    meta: {
+      showFooter: false,
+      showHeader: false,  // 頭部和底部都不顯示
+      showDeskHeader: true,
+      showDeskFooter: true
+    }
   },
   {
     path: '/pageA',

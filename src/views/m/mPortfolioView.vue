@@ -5,19 +5,23 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const activeTab = ref('games');
 
+import rotation from '@/assets/picture/rotation.png';
+import shooting from '@/assets/picture/shooting.png';
+import tetris from '@/assets/picture/tetris.png';
+
 const games = ref([
   {
     id: 1,
     title: '英雄戰爭',
-    description: '經典RPG射擊遊戲，擊敗敵人、收集道具',
-    image: 'game1.jpg',
+    description: '經典RPG射擊遊戲，擊敗敵人、提升技能',
+    image: shooting,
     link: 'game2'
   },
   {
     id: 2,
     title: '方塊消除',
     description: '消除方塊的遊戲',
-    image: 'game2.jpg',
+    image: tetris,
     link: 'game3'
   }
 ]);
@@ -41,8 +45,8 @@ const effects = ref([
     id: 3,
     title: '立體3D選角特效',
     description: 'RPG遊戲選角介面',
-    image: 'effect2.jpg',
-    link: 'pageA'
+    image: rotation,
+    link: 'rotation'
   },
   {
     id: 4,
@@ -92,7 +96,7 @@ onMounted(() => {
 
     <div class="projects-list" v-if="activeTab === 'games'">
       <div v-for="game in games" :key="game.id" class="project-item" @click="openProject(game.link)">
-        <div class="project-image" :style="{ backgroundImage: `url(@/assets/images/${game.image})` }"></div>
+        <div class="project-image" :style="{ backgroundImage: `url(${game.image})` }"></div>
         <div class="project-info">
           <h3>{{ game.title }}</h3>
           <p>{{ game.description }}</p>
@@ -103,7 +107,7 @@ onMounted(() => {
 
     <div class="projects-list" v-if="activeTab === 'effects'">
       <div v-for="effect in effects" :key="effect.id" class="project-item" @click="openProject(effect.link)">
-        <div class="project-image" :style="{ backgroundImage: `url(@/assets/images/${effect.image})` }"></div>
+        <div class="project-image" :style="{ backgroundImage: `url(${effect.image})` }"></div>
         <div class="project-info">
           <h3>{{ effect.title }}</h3>
           <p>{{ effect.description }}</p>

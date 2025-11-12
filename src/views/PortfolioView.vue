@@ -3,6 +3,10 @@ import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import img from '@/assets/picture/user/3.png';
+import rotation from '@/assets/picture/rotation.png';
+import shooting from '@/assets/picture/shooting.png';
+import tetris from '@/assets/picture/tetris.png';
+import slot from '@/assets/picture/slot.png';
 
 const router = useRouter();
 const activeFilter = ref('all');
@@ -10,34 +14,34 @@ const activeFilter = ref('all');
 const projects = ref([
   {
     id: 1,
-    title: 'Phaser 太空射擊遊戲',
-    description: '使用 Phaser 3 開發的經典太空射擊遊戲，包含多種敵人類型和武器升級系統',
-    image: img,
-    link: '/games/space-shooter',
+    title: '英雄戰爭',
+    description: '手機遊戲、經典RPG射擊遊戲，擊敗敵人、提升技能',
+    image: shooting,
+    link: 'game2',
     type: 'game'
   },
   {
     id: 2,
-    title: '2D 平台跳躍遊戲',
-    description: '具有物理引擎的平台跳躍遊戲，玩家需要收集金幣並避開障礙物',
-    image: img,
+    title: '方塊消除',
+    description: '手機遊戲、消除方塊',
+    image: tetris,
     link: '/games/platform-jumper',
     type: 'game'
   },
   {
     id: 3,
-    title: '粒子特效展示',
-    description: '使用 Phaser 的粒子系統創建的各種視覺特效展示',
-    image: img,
-    link: '/effects/particles',
+    title: '縱向3D旋轉效果',
+    description: '使用3D旋轉效果的應用展示',
+    image: rotation,
+    link: '/rotation',
     type: 'effect'
   },
   {
     id: 4,
-    title: '動態光影效果',
-    description: '實現動態光影和色彩變換的視覺特效',
-    image: img,
-    link: '/effects/lighting',
+    title: '老虎機效果',
+    description: '實現老虎機轉動特效',
+    image: slot,
+    link: '/slot',
     type: 'effect'
   }
 ]);

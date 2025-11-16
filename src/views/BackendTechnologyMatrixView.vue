@@ -474,9 +474,9 @@ onMounted(() => {
 <style lang="scss" scoped>
 .technology-matrix-container {
   max-width: 1200px;
+  height: 100vh;
   margin: 0 auto;
   padding: 2rem;
-  height: 100%;
   overflow-y: auto;
   font-family: 'Noto Sans TC', sans-serif;
   color: #333;

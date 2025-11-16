@@ -26,7 +26,7 @@
                 <router-link to="/" @click="closeMenu">首頁</router-link>
                 <router-link to="/about" @click="closeMenu">關於我</router-link>
                 <router-link to="/skills" @click="closeMenu">技能</router-link>
-                <router-link to="/experience" @click="closeMenu">經歷</router-link>
+                <router-link to="/experience" @click="closeMenu">技術筆記</router-link>
                 <router-link to="/portfolio" @click="closeMenu">作品集</router-link>
             </nav>
         </div>

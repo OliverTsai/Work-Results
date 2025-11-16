@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const loading = ref(false);
 const name = ref('蔡福人');
-const title = ref('軟體工程師 / 前後端工程師');
+const title = ref('軟體工程師 / 全端工程師');
 const introduction = ref('我是一名熱愛技術的全端開發者，擅長 Vue.js、TypeScript 和後端開發。擁有 5 年開發經驗，致力於打造高品質的使用者體驗。');
 
 onMounted(async () => {

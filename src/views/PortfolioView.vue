@@ -7,6 +7,7 @@ import rotation from '@/assets/picture/rotation.png';
 import shooting from '@/assets/picture/shooting.png';
 import tetris from '@/assets/picture/tetris.png';
 import slot from '@/assets/picture/slot.png';
+import jackpot from '@/assets/picture/jackpot.png';
 
 const router = useRouter();
 const activeFilter = ref('all');
@@ -42,6 +43,14 @@ const projects = ref([
     description: '實現老虎機轉動特效',
     image: slot,
     link: '/slot',
+    type: 'effect'
+  },
+  {
+    id: 5,
+    title: 'Jackpot獎金轉動特效',
+    description: '實現獎金轉動特效',
+    image: jackpot,
+    link: '/jackpot',
     type: 'effect'
   }
 ]);

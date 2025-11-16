@@ -8,6 +8,7 @@ const activeTab = ref('games');
 import rotation from '@/assets/picture/rotation.png';
 import shooting from '@/assets/picture/shooting.png';
 import tetris from '@/assets/picture/tetris.png';
+import jackpot from '@/assets/picture/jackpot.png';
 
 const games = ref([
   {
@@ -36,10 +37,10 @@ const effects = ref([
   },
   {
     id: 2,
-    title: '光影效果',
-    description: '動態光影和色彩變換的視覺特效',
-    image: 'effect2.jpg',
-    link: '/effects/lighting'
+    title: 'Jackpot獎金轉動特效',
+    description: '實現獎金轉動特效',
+    image: jackpot,
+    link: '/jackpot'
   },
   {
     id: 3,

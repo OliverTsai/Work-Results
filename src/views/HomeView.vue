@@ -51,7 +51,7 @@
       </section>
 
       <!-- 專案經歷區塊 -->
-      <section id="skills" class="skills">
+      <section class="skills">
         <div class="section-title">
           <h2>近期專案</h2>
           <div class="section-decoration"></div>
@@ -85,7 +85,43 @@
               </div>
               <div class="skill-item cta-button">
                 <router-link to="/Technology_Matrix">
-                  <span class="btn primary">AI評論以及未來優化方向</span>
+                  <span class="btn primary">AI分析以及未來優化方向</span>
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="skills-content">
+          <div class="skill-category">
+            <h3>爬蟲專案後端</h3>
+            <div class="skill-items">
+              <div class="skill-item video-link">
+                <a href="https://youtu.be/4wgEg8mH5NY" target="_blank" rel="noopener noreferrer">
+                  <div class="video-thumbnail">
+                    <img src="@/assets/picture/dongling.png" alt="影片展示" />
+                    <div class="play-icon">
+                      <i class="fas fa-play-circle"></i>
+                    </div>
+                  </div>
+                  <p class="video-title"></p>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="skill-category">
+            <h3>專案責任範圍</h3>
+            <div class="skill-items">
+              <div class="skill-item project-description">
+                <p>將原有C#本地運行系統轉換為雲端部署的Python後端服務，以支援企業資料查詢系統；
+                  主要挑戰包括對整個系統進行了重新設計和優化，使其更適合在伺服器環境中運行，
+                  以及處理大量政府公開資料、確保系統穩定性；個人貢獻如下：
+                  1.使用Python + Flask開發RESTful API，便於與現有爬蟲系統整合；
+                  2.將原本只有資料庫容器化改為整個專案容器化，提升部署效率與一致性；
+                  3.設計關聯式資料庫結構，提升資料完整性以及建立種子(政府公開)資料建立機制</p>
+              </div>
+              <div class="skill-item cta-button">
+                <router-link to="/Backend_TechnologyMatrix">
+                  <span class="btn primary">AI分析以及未來優化方向</span>
                 </router-link>
               </div>
             </div>
@@ -483,7 +519,13 @@ section:nth-child(odd)::after {
   color: var(--light-text);
 }
 
-// 技能區塊
+// 專案經歷區塊
+.skills{
+  display: flex;
+  flex-direction:column;
+  gap:3rem;
+}
+
 .skills-content {
   display: flex;
   flex-wrap: wrap;

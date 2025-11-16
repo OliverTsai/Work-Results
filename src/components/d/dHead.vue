@@ -8,7 +8,7 @@
         <router-link to="/">首頁</router-link>
         <router-link to="/about">關於我</router-link>
         <router-link to="/skills">技能</router-link>
-        <router-link to="/experience">經歷</router-link>
+        <router-link to="/experience">技術筆記</router-link>
         <router-link to="/portfolio">作品集</router-link>
       </nav>
       <div class="social-links">

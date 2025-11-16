@@ -21,6 +21,8 @@ import mRotation from '@/views/effect/m/mEffectRotationView.vue';
 import Slot from '@/views/effect/SlotMachineView.vue';
 import mSlot from '@/views/effect/m/mSlotMachineView.vue';
 
+import Jackpot from '@/views/effect/JackpotView.vue';
+
 import gameTurboView from '@/views/gameTurboView.vue';
 import LoginView from '@/views/LoginView.vue';
 import LoginLineView from '@/views/LoginLineView.vue';
@@ -105,6 +107,17 @@ const routes = [
     meta: {
       showFooter: false,
       showHeader: false,  // 頭部和底部都不顯示
+      showDeskHeader: true,
+      showDeskFooter: true
+    }
+  },
+  {
+    path: '/jackpot',
+    name: 'jackpot',
+    component: store.isMobile ? Jackpot : Jackpot,
+    meta: {
+      showFooter: false,
+      showHeader: true,  // 頭部和底部都不顯示
       showDeskHeader: true,
       showDeskFooter: true
     }

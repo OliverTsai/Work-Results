@@ -531,7 +531,7 @@ function renderRadarChart() {
 <style lang="scss" scoped>
 .m-technology-matrix-container {
   padding: 1rem;
-  height: 100%;
+  height: 100vh;
   overflow-y: auto;
   font-family: 'Noto Sans TC', sans-serif;
   color: #333;

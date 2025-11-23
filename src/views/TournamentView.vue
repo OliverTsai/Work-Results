@@ -12,7 +12,6 @@
         @view-blind="showBlind"
         @view-rank="showRank"
         @back-to-main="showMain"
-        @register="handleRegister"
         ></component>
     </div>
 </template>
@@ -45,54 +44,6 @@ const tournamentData = ref<any>(null);
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 
-const isConnected = computed(() => wsStore.isConnected);
-const messages = computed(() => wsStore.messages);
-
-// 監聽 WebSocket 是否連線
-watch(isConnected, (newVal) => {
-  if (newVal) {
-    console.log('WebSocket 已連線，開始訂閱錦標賽');
-    if (token.value) {
-      wsStore.resubscribeToTournamentShow(tournamentId);
-    } else {
-      console.warn('沒有可用的 token，無法訂閱');
-    }
-  }
-}, { immediate: true });
-
-// 監聽 WebSocket 消息
-watch(messages, (msg) => {
-  if (!msg) return;  // 避免 msg 為 null
-  try {
-    const data = msg;
-
-    if(data.event === "base_info"){
-
-        tournamentData.value.tournament.base.status = data.status;
-        tournamentData.value.tournament.base.register_start_time = data.register_start_time
-        tournamentData.value.tournament.base.pot_fee = data.pot_fee;
-        tournamentData.value.tournament.base.max_players = data.max_players;
-        tournamentData.value.tournament.base.register_start_time = data.register_start_time;
-        tournamentData.value.tournament.base.register_end_time = data.register_end_time;
-        tournamentData.value.tournament.base.service_fee = data.service_fee;
-        tournamentData.value.tournament.base.starting_chips = data.starting_chips;
-        tournamentData.value.tournament.base.blind_levels = data.blind_levels;
-    }
-
-    if(data.event === "stats") {
-        tournamentData.value.tournament.stats.current_players = data.stats.current_players;
-        tournamentData.value.tournament.stats.total_pot = data.stats.total_pot;
-    }
-
-    if(data.event === "blind_level") {
-        tournamentData.value.tournament.blind_state.big_blind = data.big_blind;
-        tournamentData.value.tournament.blind_state.small_blind = data.small_blind;
-    }
-  } catch (error) {
-    console.error('解析 WebSocket 消息時出錯:', error);
-  }
-});
-
 // 使用 shallowRef 來存儲當前視圖組件，提高性能
 const currentView = shallowRef<any>(markRaw(TournamentMainView));
 
@@ -121,72 +72,14 @@ function showRank() {
     currentView.value = markRaw(TournamentRankView);
 }
 
-// 處理報名操作
-async function handleRegister() {
-    // 實現報名邏輯
-    try {
-        const url = backendApi(`/api/v1/tournaments/${tournamentId}/register`);
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token.value}`
-            }
-        });
-        
-        if (!res.ok) {
-            throw new Error(`API 請求失敗: ${res.status}`);
-        }
-        
-        const data = await res.json();
-        console.log('報名成功:', data);
-        alert('報名成功！');
-        // 可以在此處添加成功報名後的處理邏輯
-
-        // 重新獲取錦標賽資訊以更新狀態
-        await getTournamentInfo();
-    } catch (err) {
-        console.error('報名時出錯:', err);
-        error.value = err instanceof Error ? err.message : '未知錯誤';
-    }
-}
-
-// 取得錦標賽資訊
-async function getTournamentInfo() {
-    loading.value = true;
-    try {
-        const url = backendApi(`/api/v1/tournaments/${tournamentId}`);
-        const res = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token.value}`
-        }
-        });
-        
-        if (!res.ok) {
-        throw new Error(`API 請求失敗: ${res.status}`);
-        }
-        
-        const data = await res.json();
-        tournamentData.value = data.data;
-        console.log('錦標賽資料:', data);
-    } catch (err) {
-        console.error('獲取錦標賽資料時出錯:', err);
-        error.value = err instanceof Error ? err.message : '未知錯誤';
-    } finally {
-        loading.value = false;
-    }
-}
 
 // 生命週期鉤子
 onMounted(async () => {
-    await getTournamentInfo();
+    
 });
 
 onUnmounted(() => {
-// 清除連接或訂閱
-    wsStore.unsubscribeFromTournamentShow(tournamentId);
+
 });
 </script>
 

@@ -117,7 +117,7 @@
       
       <!-- 報名按鈕 -->
       <div class="tournament-action" v-if="tournamentData?.user_info.is_registered === false">
-        <div class="actionBg" @click="$emit('register')">
+        <div class="actionBg" @click="">
           <img src="@/assets/picture/on_enter.png">
         </div>
         <div class="actionText">
@@ -144,7 +144,7 @@
   });
   
   // 定義組件發出的事件
-  defineEmits(['view-details', 'view-players', 'view-prizes', 'register','view-blind', 'view-rank']);
+  defineEmits(['view-details', 'view-players', 'view-prizes','view-blind', 'view-rank']);
   
   // 計算進度百分比
   const progressPercentage = computed(() => {

@@ -21,6 +21,8 @@ import mRotation from '@/views/effect/m/mEffectRotationView.vue';
 import Slot from '@/views/effect/SlotMachineView.vue';
 import mSlot from '@/views/effect/m/mSlotMachineView.vue';
 
+import Notes from '@/views/TechnicalNotesView.vue';
+
 import Jackpot from '@/views/effect/JackpotView.vue';
 
 import gameTurboView from '@/views/gameTurboView.vue';
@@ -98,6 +100,29 @@ const routes = [
       showHeader: false,  // 頭部和底部都不顯示
       showDeskHeader: false,
       showDeskFooter: false
+    }
+  },
+  //筆記頁面
+  {
+    path: '/notes',
+    component: Notes,
+    children: [
+      {
+        path: '',
+        name: 'notes',
+        component: Notes,
+      },
+      {
+        path: ':noteRoute',
+        name: 'note-detail',
+        component: Notes,
+      }
+    ],
+    meta: {
+      showFooter: true,
+      showHeader: true,
+      showDeskHeader: true,
+      showDeskFooter: true
     }
   },
   {

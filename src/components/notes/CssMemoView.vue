@@ -12,6 +12,15 @@
 
     <div class="note-content">
       <section>
+        <h2>常用資源</h2>
+        <a href="https://css-tricks.com/" target="_blank" rel="noopener">CSS-Tricks</a> - 提供大量 CSS 教程和技巧的網站。<br>
+        <a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS" target="_blank" rel="noopener">MDN Web Docs - CSS</a> - Mozilla 的官方文檔，涵蓋了 CSS 的各個方面。<br>
+        <a href="https://icons.getbootstrap.com/" target="_blank" rel="noopener">Bootstrap提供的SVG圖</a><br>
+        <a href="https://www.cssfontstack.com/" target="_blank" rel="noopener">常用字體列表</a><br>
+        <a href="https://caniuse.com/" target="_blank" rel="noopener">Can I use</a> - 查詢各種 CSS 屬性在不同瀏覽器中的支援情況。<br>
+        <a href="https://codepen.io/" target="_blank" rel="noopener">前端示範的平台</a> - 視覺化的 CSS 屬性平台。<br>
+      </section>
+      <section>
         <h2>Flex 排版基礎</h2>
         <p>Flexbox 是一種一維的佈局方法，用於在行或列中排列項目：</p>
         <pre><code>

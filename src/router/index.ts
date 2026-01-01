@@ -25,21 +25,12 @@ import Notes from '@/views/TechnicalNotesView.vue';
 
 import Jackpot from '@/views/effect/JackpotView.vue';
 
-import gameTurboView from '@/views/gameTurboView.vue';
 import LoginView from '@/views/LoginView.vue';
 import LoginLineView from '@/views/LoginLineView.vue';
 import LoginLineCallBack from '@/views/LineCallBackView.vue';
-import HallView from '@/views/HallView.vue';
-import SelectTableView from '@/views/SelectTableView.vue';
+
 import TournamentView from '@/views/TournamentView.vue';
-import UserView from '@/views/UserView.vue';
-import PlayLog from '@/views/PlayLogView.vue';
-import Guild from '@/views/GuildView.vue';
-import GuildDetails from '@/views/GuildDetailsView.vue';
-import Friend from '@/views/friendView.vue';
-import Bank from '@/views/bankView.vue';
 import Choose from '@/views/chooseView.vue';
-import Store from '@/views/storeView.vue';
 import WebSocketTester from '@/views/WebSocketTester.vue';
 import test from '@/views/LoginTestView.vue';
 
@@ -172,41 +163,6 @@ const routes = [
     component: store.isMobile ? LoginLineCallBack : LoginLineCallBack,
   },
   {
-    path: '/hall',
-    name: 'hall',
-    component: store.isMobile ? HallView : HallView,
-  },
-  {
-    path: '/user',
-    name: 'user',
-    component: store.isMobile ? UserView : UserView,
-  },
-  {
-    path: '/guild',
-    name: 'guild',
-    component: store.isMobile ? Guild : Guild,
-  },
-  {
-    path: '/guild_details',
-    name: 'guild_details',
-    component: store.isMobile ? GuildDetails : GuildDetails,
-  },
-  {
-    path: '/friend',
-    name: 'friend',
-    component: store.isMobile ? Friend : Friend,
-  },
-  {
-    path: '/bank',
-    name: 'bank',
-    component: store.isMobile ? Bank : Bank,
-  },
-  {
-    path: '/store',
-    name: 'store',
-    component: store.isMobile ? Store : Store,
-  },
-  {
     path: '/Technology_Matrix',
     name: 'Technology_Matrix',
     component: store.isMobile ? mTechnologyMatrix : TechnologyMatrix,
@@ -215,16 +171,6 @@ const routes = [
     path: '/Backend_TechnologyMatrix',
     name: 'Backend_TechnologyMatrix',
     component: store.isMobile ? mBackendTechnologyMatrix : BackendTechnologyMatrix,
-  },
-  {
-    path: '/play_log',
-    name: 'play_log',
-    component: store.isMobile ? PlayLog : PlayLog,
-  },
-  {
-    path: '/select',
-    name: 'select',
-    component: store.isMobile ? SelectTableView : SelectTableView,
   },
   {
     path: '/tournament',
@@ -253,12 +199,6 @@ const routes = [
     path: '/game3',
     name: 'game3',
     component: store.isMobile ? game3View : game3View,
-  },
-  {
-    path: '/gameTurbo',
-    name: 'gameTurbo',
-    component: store.isMobile ? gameTurboView : gameTurboView,
-    meta: { requiresAuth: true } // 標記此路由需要驗證
   },
   {
     path: '/websocket-tester',

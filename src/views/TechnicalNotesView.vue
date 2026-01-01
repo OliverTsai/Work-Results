@@ -151,6 +151,7 @@ onMounted(() => {
   margin: 0 auto;
   padding: 20px;
   height: calc(100vh - 180px); /* 減去頁首頁尾的高度 */
+  overflow-y: auto;
   
   h1 {
     margin-bottom: 30px;

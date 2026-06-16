@@ -2,11 +2,22 @@
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import avatarUrl from '@/assets/picture/user/MTXX_20200907183540.jpg';
+import bgUrl from '@/assets/picture/headerBG.jpg';
+
 const router = useRouter();
 const loading = ref(false); // 改為 false，因為我們不需要顯示加載中
 const name = ref('蔡福人'); // 您的名字
-const title = ref('軟體工程師 / 全端工程師'); // 您的標語
-const introduction = ref('我是一名熱愛技術的全端開發者，擅長 Vue.js、TypeScript 和後端開發。擁有 5 年開發經驗，致力於打造高品質的使用者體驗。'); // 簡短自我介紹
+const title = ref('軟體工程師 / 前端工程師'); // 您的標語
+const introduction = ref('我是一名熱愛技術的前端開發者，擅長 Vue.js、TypeScript 和伺服器部署經驗。擁有 5 年開發經驗，致力於打造高品質的使用者體驗。'); // 簡短自我介紹
+
+const githubUrl = 'https://github.com/OliverTsai';
+
+const backgroundImage = `url(${bgUrl})`;
+
+const openGithub = () => {
+  window.open(githubUrl, '_blank');
+};
 
 onMounted(async () => {
   // 可以在這裡添加頁面載入時的邏輯
@@ -15,20 +26,46 @@ onMounted(async () => {
 
 <template>
   <div class="home-container">
-    <div class="profile-box">
-      <div class="profile-image">
-        <img src="@/assets/picture/user/MTXX_20200907183540.jpg" alt="個人照片" />
-      </div>
-      <div class="profile-info">
-        <h1 class="name">{{ name }}</h1>
-        <h2 class="title">{{ title }}</h2>
-        <div class="divider"></div>
-        <p class="introduction">{{ introduction }}</p>
-        <div class="social-links">
-          <a href="https://github.com/OliverTsai" target="_blank" class="social-link">GitHub</a>
-        </div>
-      </div>
-    </div>
+    <el-card class="profile-card" shadow="always">
+      <el-row :gutter="32" align="middle">
+        <el-col :xs="24" :sm="24" :md="8" class="avatar-col">
+          <el-avatar
+            :size="200"
+            :src="avatarUrl"
+            class="profile-avatar"
+          />
+        </el-col>
+
+        <el-col :xs="24" :sm="24" :md="16">
+          <div class="profile-info">
+            <h1 class="name">
+              {{ name }}
+            </h1>
+
+            <h2 class="title">
+              {{ title }}
+            </h2>
+
+            <el-divider class="custom-divider" />
+
+            <p class="introduction">
+              {{ introduction }}
+            </p>
+
+            <div class="action-area">
+              <el-button
+                type="primary"
+                size="large"
+                round
+                @click="openGithub"
+              >
+                GitHub
+              </el-button>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+    </el-card>
   </div>
 </template>
 

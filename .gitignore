@@ -3,6 +3,7 @@
 
 # 忽略依賴目錄
 /node_modules
+/temp_deploy/
 
 # 忽略日誌檔案
 npm-debug.log*
